@@ -1,3 +1,29 @@
+input_path = input("\nEnter INPUT file path\n>>> ") or "../read/quotes.txt"
+output_path = input("\nEnter OUTPUT file path\n>>> ") or "output.txt"
+
+try:
+    with open(input_path, "r") as file:
+        lines = file.readlines()
+except IOError:
+    print("ERROR: Please specify a valid input path.")
+
+try:
+    with open(output_path, "w") as file:
+        for line in lines:
+            file.write(line + "\n")
+        print("The data has been written to the file.")
+except IOError:
+    print("ERROR: Please specify a valid output path.")
+
+"""
+** Input **
+
+None for both prompts
+"""
+
+"""
+** Txt output **
+
 No one has ever become poor by giving. [Anne Frank]
 
 What’s in a name? A rose by any other name would smell as sweet. [Shakespeare]
@@ -21,3 +47,5 @@ I paint flowers so they will not die. [Frida Kahlo]
 Only from the heart can you touch the sky. [Rumi]
 
 I hear and I forget. I see and I remember. I do and I understand. [Confucius]
+
+"""
