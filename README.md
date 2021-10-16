@@ -4,12 +4,18 @@
 
 ## How to run
 
+### Python
+
 ```bash
 # Windows and Linux
 python [filename]
 
 # MacOS
 python3 [filename]
+```
+### C++
+```bash
+g++ [filename] - [filename]
 ```
 
 ## License
