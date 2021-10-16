@@ -3,7 +3,9 @@ file_path = "../songs.csv"
 
 with open(file_path, "r") as file:
     csv_list = list(csv.reader(file))
-    [print ("[{}]".format(line[3]), line[0], "(by {})".format(line[1])) for idx, line in enumerate(csv_list) if idx > 0]
+    for idx, line in enumerate(csv_list):
+        if idx > 0:
+            print ("[{}]".format(line[3]), line[0], "(by {})".format(line[1]))
 
 """
 Output:

@@ -1,6 +1,6 @@
 file = "quotes.txt"
-f = open(file)
-print(file.readlines())
+with open(file, "r") as f:
+    print(f.readlines())
 f.close()
 
 """

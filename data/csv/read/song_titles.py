@@ -3,7 +3,9 @@ file_path = "../songs.csv"
 
 with open(file_path, "r") as file:
     csv_list = list(csv.reader(file))
-    [print (line[0]) for idx, line in enumerate(csv_list) if idx > 0]
+    for idx, line in enumerate(csv_list):
+        if idx > 0:
+            print (line[0])
 
 """
 Output:
