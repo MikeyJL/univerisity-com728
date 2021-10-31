@@ -1,10 +1,11 @@
-from database import display_products_with_stock_levels, display_product_supplier, display_product_supplier_locations
+import database as db
 
 def display_menu():
     menu = """\nPlease select one of the following options:
 [1] Display stock levels
 [2] Display suppliers
-[3] Display supplier locations"""
+[3] Display supplier locations
+[4] Display missing suppliers"""
     print(menu)
 
 def run():
@@ -18,11 +19,13 @@ def run():
     
     print("\nYou've selected option: ", option)
     if option == 1:
-        display_products_with_stock_levels()
+        db.display_products_with_stock_levels()
     elif option == 2:
-        display_product_supplier()
+        db.display_product_supplier()
     elif option == 3:
-        display_product_supplier_locations()
+        db.display_product_supplier_locations()
+    elif option == 4:
+        db.display_products_missing_suppliers()
 
 if __name__ == "__main__":
     run()
