@@ -6,7 +6,8 @@ def display_menu():
 [2] Display suppliers
 [3] Display supplier locations
 [4] Display missing suppliers
-[5] Display missing products"""
+[5] Display missing products
+[6] Display missing data"""
     print(menu)
 
 def run():
@@ -29,6 +30,8 @@ def run():
         db.display_products_missing_suppliers()
     elif option == 5:
         db.display_suppliers_missing_products()
+    elif option == 6:
+        db.display_missing_data()
 
 if __name__ == "__main__":
     run()

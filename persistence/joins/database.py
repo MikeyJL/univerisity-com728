@@ -71,3 +71,24 @@ def display_suppliers_missing_products():
         print("\nSupplier:", supplier, "\nProduct:", product)
     
     db.close()
+
+def display_missing_data():
+    db = sq.connect('./catalogue.db')
+    cur = db.cursor()
+    sql = "SELECT product.name, supplier.name " \
+          "FROM product " \
+          "LEFT OUTER JOIN supplier ON product.supplier_id = supplier.id " \
+          "UNION " \
+          "SELECT product.name, supplier.name " \
+          "FROM supplier " \
+          "LEFT OUTER JOIN product ON product.supplier_id = supplier.id;"
+    cur.execute(sql)
+    records = cur.fetchall()
+
+    missing_suppliers = [record[0] for record in records if record[1] == None]
+    missing_products = [record[1] for record in records if record[0] == None]
+
+    print("\nThe following products are missing suppliers:\n", missing_suppliers)
+    print("\nThe following suppliers are missing products:\n", missing_products)
+    
+    db.close()
