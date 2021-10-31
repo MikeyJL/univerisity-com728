@@ -10,3 +10,5 @@ def display_products_with_stock_levels ():
     for record in records:
         product, description, stock = record
         print("\nProduct:", product, "\nDescription:", description, "\nStock:", stock)
+    
+    db.close()
