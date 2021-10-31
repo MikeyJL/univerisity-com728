@@ -25,3 +25,19 @@ def display_product_supplier():
         print("\nProduct:", product, "\nSupplier:", supplier)
     
     db.close()
+
+def display_product_supplier_locations():
+    db = sq.connect('./catalogue.db')
+    cur = db.cursor()
+    sql = "SELECT product.name, supplier.name, location.city, location.country " \
+          "FROM product " \
+          "INNER JOIN supplier ON product.supplier_id == supplier.id " \
+          "INNER JOIN location ON supplier.location_id == location.id"
+    cur.execute(sql)
+    records = cur.fetchall()
+
+    for record in records:
+        product, supplier, city, country = record
+        print("\nProduct:", product, "\nSupplier:", supplier, "\nSupplier Location:", f"{city}, {country}")
+    
+    db.close()
