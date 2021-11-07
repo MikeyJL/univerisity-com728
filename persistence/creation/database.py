@@ -94,11 +94,14 @@ class Database:
         self.db.commit()
 
     def get_all_presenters_and_org(self):
-        sql = "SELECT presenter.name, organisation.name FROM presenters" \
-              "INNER JOIN organisations" \
-              "ON presenter.organisation_id = organisation.id ;"
+        sql = "SELECT presenters.name, organisations.name FROM presenters " \
+              "INNER JOIN organisations " \
+              "ON presenters.organisation_id = organisations.id;"
         records = self.cur.execute(sql).fetchall()
-        print(records)
+        print("\nList of all the presenters and the organisation(s) they belong to:")
+        for record in records:
+            print(f"\n{record[0]}")
+            print(f"{record[1]}")
 
     def close_db(self):
         self.db.close()
