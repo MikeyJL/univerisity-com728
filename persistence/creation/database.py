@@ -118,5 +118,22 @@ class Database:
             print(f"{record[1]}")
             print(f"{record[2]}")
 
+    def get_all_presenters_for_event(self):
+        eid = input("\nEvent ID: ")
+        sql = "SELECT events.name, presenters.name, organisations.name FROM event_presenters " \
+              "LEFT OUTER JOIN events " \
+              "ON event_presenters.event_id = events.id " \
+              "LEFT OUTER JOIN presenters " \
+              "ON event_presenters.presenter_id = presenters.id " \
+              "LEFT OUTER JOIN organisations " \
+              "ON presenters.organisation_id = organisations.id " \
+              "WHERE event_id = ?;"
+        records = self.cur.execute(sql, [eid]).fetchall()
+        if not records:
+            return print("ERROR: Event not found")
+        print(f"\nName of the event: {records[0][0]}\n")
+        for record in records:
+            print(f"{record[1]} ({record[2]})")
+
     def close_db(self):
         self.db.close()

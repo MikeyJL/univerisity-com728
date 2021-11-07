@@ -29,3 +29,5 @@ if option == 1:
     db.get_all_presenters_and_org()
 elif option == 2:
     db.get_all_events_and_location()
+elif option == 3:
+    db.get_all_presenters_for_event()
