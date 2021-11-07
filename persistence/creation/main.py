@@ -30,6 +30,8 @@ if option == 1:
 elif option == 2:
     db.get_all_events_and_location()
 elif option == 3:
-    db.get_all_presenters_for_event()
+    db.find_and_get("event")
+elif option == 4:
+    db.find_and_get("presenter")
 
 db.close_db()
