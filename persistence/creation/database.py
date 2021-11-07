@@ -1,54 +1,104 @@
 import sqlite3
+from init_data import data
 
-def setup():
-    db = sqlite3.connect('./database.db')
-    cur = db.cursor()
+class Database:
+    def __init__(self, generate=False):
+        self.db = sqlite3.connect('./database.db')
+        self.cur = self.db.cursor()
+        self.setup()
 
-    sql = """
-    BEGIN TRANSACTION;
-    CREATE TABLE IF NOT EXISTS "countries" (
-        "id" INTEGER NOT NULL UNIQUE,
-        "name" TEXT NOT NULL,
-        PRIMARY KEY("id" AUTOINCREMENT)
-    );
-    CREATE TABLE IF NOT EXISTS "locations" (
-        "id" INTEGER NOT NULL UNIQUE,
-        "city" TEXT NOT NULL,
-        "country_id" INTEGER NOT NULL,
-        PRIMARY KEY ("id" AUTOINCREMENT),
-        FOREIGN KEY ("country_id") REFERENCES "countries" ("id")
-    );
-    CREATE TABLE IF NOT EXISTS "organisations" (
-        "id" INTEGER NOT NULL UNIQUE,
-        "name" TEXT NOT NULL,
-        "location_id" INTEGER NOT NULL,
-        PRIMARY KEY ("id" AUTOINCREMENT),
-        FOREIGN KEY ("location_id") REFERENCES "location" ("id")
-    );
-    CREATE TABLE IF NOT EXISTS "events" (
-        "id" INTEGER NOT NULL UNIQUE,
-        "name" TEXT NOT NULL,
-        "type" TEXT NOT NULL,
-        "host_id" INTEGER NOT NULL,
-        PRIMARY KEY ("id" AUTOINCREMENT),
-        FOREIGN KEY ("host_id") REFERENCES "organisations" ("id")
-    );
-    CREATE TABLE IF NOT EXISTS "presenters" (
-        "id" INTEGER NOT NULL UNIQUE,
-        "name" TEXT NOT NULL,
-        "organisation_id" INTEGER NOT NULL,
-        PRIMARY KEY ("id" AUTOINCREMENT),
-        FOREIGN KEY ("organisation_id") REFERENCES "organisations" ("id")
-    );
-    CREATE TABLE IF NOT EXISTS "event_presenters" (
-        "event_id" INTEGER NOT NULL UNIQUE,
-        "presenter_id" INTEGER NOT NULL UNIQUE,
-        CONSTRAINT "event_presenter" PRIMARY KEY ("event_id", "presenter_id"),
-        FOREIGN KEY ("event_id") REFERENCES "events" ("id")
-        FOREIGN KEY ("presenter_id") REFERENCES "presenters" ("id")
-    );
-    COMMIT;
-    """
+        if generate:
+            # Countries
+            sql = "INSERT INTO countries (name) VALUES (?)"
+            for country in data["countries"]:
+                self.cur.execute(sql, [country])
 
-    cur.executescript(sql)
-    db.commit()
+            # Locations
+            sql = "INSERT INTO locations (city, country_id) VALUES (?, ?)"
+            for location in data["locations"]:
+                self.cur.execute(sql, location)
+            self.db.commit()
+            
+            # organisations
+            sql = "INSERT INTO organisations (name, location_id) VALUES (?, ?)"
+            for organisation in data["organisations"]:
+                self.cur.execute(sql, organisation)
+            self.db.commit()
+            
+            # events
+            sql = "INSERT INTO events (name, type, host_id) VALUES (?, ?, ?)"
+            for event in data["events"]:
+                self.cur.execute(sql, event)
+            self.db.commit()
+            
+            # presenters
+            sql = "INSERT INTO presenters (name, organisation_id) VALUES (?, ?)"
+            for presenter in data["presenters"]:
+                self.cur.execute(sql, presenter)
+            self.db.commit()
+            
+            # event_presenters 
+            sql = "INSERT INTO event_presenters (event_id, presenter_id) VALUES (?, ?)"
+            for event_presenter in data["event_presenters"]:
+                self.cur.execute(sql, event_presenter)
+            self.db.commit()
+
+    def setup(self):
+        sql = """
+        BEGIN TRANSACTION;
+        CREATE TABLE IF NOT EXISTS "countries" (
+            "id" INTEGER NOT NULL UNIQUE,
+            "name" TEXT NOT NULL,
+            PRIMARY KEY("id" AUTOINCREMENT)
+        );
+        CREATE TABLE IF NOT EXISTS "locations" (
+            "id" INTEGER NOT NULL UNIQUE,
+            "city" TEXT NOT NULL,
+            "country_id" INTEGER NOT NULL,
+            PRIMARY KEY ("id" AUTOINCREMENT),
+            FOREIGN KEY ("country_id") REFERENCES "countries" ("id")
+        );
+        CREATE TABLE IF NOT EXISTS "organisations" (
+            "id" INTEGER NOT NULL UNIQUE,
+            "name" TEXT NOT NULL,
+            "location_id" INTEGER NOT NULL,
+            PRIMARY KEY ("id" AUTOINCREMENT),
+            FOREIGN KEY ("location_id") REFERENCES "location" ("id")
+        );
+        CREATE TABLE IF NOT EXISTS "events" (
+            "id" INTEGER NOT NULL UNIQUE,
+            "name" TEXT NOT NULL,
+            "type" TEXT NOT NULL,
+            "host_id" INTEGER NOT NULL,
+            PRIMARY KEY ("id" AUTOINCREMENT),
+            FOREIGN KEY ("host_id") REFERENCES "organisations" ("id")
+        );
+        CREATE TABLE IF NOT EXISTS "presenters" (
+            "id" INTEGER NOT NULL UNIQUE,
+            "name" TEXT NOT NULL,
+            "organisation_id" INTEGER NOT NULL,
+            PRIMARY KEY ("id" AUTOINCREMENT),
+            FOREIGN KEY ("organisation_id") REFERENCES "organisations" ("id")
+        );
+        CREATE TABLE IF NOT EXISTS "event_presenters" (
+            "event_id" INTEGER NOT NULL,
+            "presenter_id" INTEGER NOT NULL,
+            CONSTRAINT "event_presenter" PRIMARY KEY ("event_id", "presenter_id"),
+            FOREIGN KEY ("event_id") REFERENCES "events" ("id")
+            FOREIGN KEY ("presenter_id") REFERENCES "presenters" ("id")
+        );
+        COMMIT;
+        """
+
+        self.cur.executescript(sql)
+        self.db.commit()
+
+    def get_all_presenters_and_org(self):
+        sql = "SELECT presenter.name, organisation.name FROM presenters" \
+              "INNER JOIN organisations" \
+              "ON presenter.organisation_id = organisation.id ;"
+        records = self.cur.execute(sql).fetchall()
+        print(records)
+
+    def close_db(self):
+        self.db.close()
