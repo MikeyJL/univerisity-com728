@@ -27,3 +27,5 @@ print(f"\nYou've selected option {option}")
 
 if option == 1:
     db.get_all_presenters_and_org()
+elif option == 2:
+    db.get_all_events_and_location()

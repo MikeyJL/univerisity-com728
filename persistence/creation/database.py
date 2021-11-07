@@ -95,13 +95,28 @@ class Database:
 
     def get_all_presenters_and_org(self):
         sql = "SELECT presenters.name, organisations.name FROM presenters " \
-              "INNER JOIN organisations " \
+              "LEFT OUTER JOIN organisations " \
               "ON presenters.organisation_id = organisations.id;"
         records = self.cur.execute(sql).fetchall()
         print("\nList of all the presenters and the organisation(s) they belong to:")
         for record in records:
             print(f"\n{record[0]}")
             print(f"{record[1]}")
+
+    def get_all_events_and_location(self):
+        sql = "SELECT events.name, locations.city, countries.name  FROM events " \
+              "LEFT OUTER JOIN organisations " \
+              "ON events.host_id = organisations.id " \
+              "LEFT OUTER JOIN locations " \
+              "ON organisations.location_id = locations.id " \
+              "LEFT OUTER JOIN countries " \
+              "ON locations.country_id = countries.id;"
+        records = self.cur.execute(sql).fetchall()
+        print("\nList of all the events and its location:")
+        for record in records:
+            print(f"\n{record[0]}")
+            print(f"{record[1]}")
+            print(f"{record[2]}")
 
     def close_db(self):
         self.db.close()
